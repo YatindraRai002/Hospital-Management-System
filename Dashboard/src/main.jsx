@@ -1,6 +1,7 @@
 import React, { createContext, useState } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
+import { SnackbarProvider } from "notistack";
 
 export const Context = createContext({ isAuthenticated: false });
 
@@ -12,7 +13,16 @@ const AppWrapper = () => {
     <Context.Provider
       value={{ isAuthenticated, setIsAuthenticated, admin, setAdmin }}
     >
-      <App />
+      <SnackbarProvider 
+        maxSnack={3}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        autoHideDuration={3000}
+      >
+        <App />
+      </SnackbarProvider>
     </Context.Provider>
   );
 };

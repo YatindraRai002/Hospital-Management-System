@@ -4,6 +4,7 @@ import { enqueueSnackbar } from "notistack";
 import { Context } from "../main";
 import axios from "axios";
 import { FaUser, FaLock, FaUserShield } from "react-icons/fa";
+import API_BASE_URL from "../config/api";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -24,7 +25,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/v1/user/login",
+        `${API_BASE_URL}/api/v1/user/login`,
         { email, password, role: "Admin" },
         {
           withCredentials: true,

@@ -66,21 +66,29 @@ export const getAllAppointments = catchAsyncErrors(async (req, res, next) => {
 // Update Appointment Status Controller
 export const updateAppointmentStatus = catchAsyncErrors(async (req, res, next) => {
     const { id } = req.params;
+    console.log('Updating appointment ID:', id);
+    console.log('Request body:', req.body);
+    
     let appointment= await Appointment.findById(id);
     if (!appointment) {
         return next(new ErrorHandler("Appointment not found", 404));
     }
+    
+    console.log('Current appointment status:', appointment.status);
+    
     appointment = await Appointment.findByIdAndUpdate(id, req.body, { 
         new: true,
         runValidators: true,
         useFindAndModify: false  
     });
+    
+    console.log('Updated appointment status:', appointment.status);
+    
     res.status(200).json({
         success: true,
         message: "Appointment status updated successfully",
         appointment
     });
-
 });
 
 

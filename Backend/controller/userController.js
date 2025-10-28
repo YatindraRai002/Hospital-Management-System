@@ -185,13 +185,17 @@ export const logoutPatient=catchAsyncErrors(async (req, res, next) => {
 
 
 export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
+    console.log('📝 Adding new doctor...');
+    console.log('Files received:', req.files);
+    console.log('Body received:', req.body);
+    
     if(!req.files||Object.keys(req.files).length===0){
         return next(new ErrorHandler("Please upload a profile picture",400));
     }
     const {docAvatar}=req.files; // Get the uploaded file
     const allowedFormats=["image/jpeg","image/jpg","image/png","image/webp"];
     if(!allowedFormats.includes(docAvatar.mimetype)){
-        return next(new ErrorHandler("Invalid file format",400));
+        return next(new ErrorHandler("Invalid file format. Please upload JPEG, JPG, PNG or WEBP",400));
     }
     const {firstName,lastName,email,gender,phone,aadharNumber,dob,password,doctorDepartment}=req.body;
     if (!firstName || !lastName || !email || !gender || !phone || !aadharNumber || !dob || !password || !doctorDepartment) {
@@ -199,16 +203,42 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
     }
     const isRegistered = await User.findOne({ email });
     if (isRegistered) {
-        return next(new ErrorHandler(`${isRegistered.role} already exists`,400));
+        return next(new ErrorHandler(`${isRegistered.role} with email ${email} already exists`,400));
     }
-   const cloudinaryResponse=await cloudinary.uploader.upload(docAvatar.tempFilePath)
-   if(!cloudinaryResponse|| cloudinaryResponse.error){
-    console.error(cloudinaryResponse.error||'Unknown error');
-   }
-    const doctor=await User.create({ firstName, lastName, email, gender, phone, aadharNumber, dob, password, role: "Doctor", doctorDepartment, docAvatar: {public_id: cloudinaryResponse.public_id, url: cloudinaryResponse.secure_url} });
-   res.status(200).json({
-       success: true,
-       message: "Doctor added successfully",
-       doctor
-   });
-   })
+    
+    console.log('📤 Uploading image to Cloudinary...');
+    const cloudinaryResponse=await cloudinary.uploader.upload(docAvatar.tempFilePath);
+    
+    if(!cloudinaryResponse|| cloudinaryResponse.error){
+        console.error('❌ Cloudinary upload error:', cloudinaryResponse.error||'Unknown error');
+        return next(new ErrorHandler("Failed to upload image to cloud storage",500));
+    }
+    
+    console.log('✅ Image uploaded successfully');
+    console.log('👨‍⚕️ Creating doctor record...');
+    
+    const doctor=await User.create({ 
+        firstName, 
+        lastName, 
+        email, 
+        gender, 
+        phone, 
+        aadharNumber, 
+        dob, 
+        password, 
+        role: "Doctor", 
+        doctorDepartment, 
+        docAvatar: {
+            public_id: cloudinaryResponse.public_id, 
+            url: cloudinaryResponse.secure_url
+        } 
+    });
+    
+    console.log('✅ Doctor added successfully:', doctor.email);
+    
+    res.status(200).json({
+        success: true,
+        message: "Doctor added successfully",
+        doctor
+    });
+});

@@ -3,6 +3,7 @@ import React, { useContext, useState } from "react";
 import { enqueueSnackbar } from "notistack"
 import { Context } from "../main";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import API_BASE_URL from "../config/api";
 
 const Register = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
@@ -23,7 +24,7 @@ const Register = () => {
     try {
       await axios
         .post(
-          "http://localhost:4000/api/v1/user/patient/register",
+          `${API_BASE_URL}/api/v1/user/patient/register`,
           { firstName, lastName, email, phone, aadharNumber: aadhar, dob, gender, password },
           {
             withCredentials: true,

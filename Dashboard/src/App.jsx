@@ -16,6 +16,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Sidebar from "./components/Sidebar";
 import AddNewAdmin from "./components/AddNewAdmin";
+import API_BASE_URL from "./config/api";
 import "./App.css";
 
 const App = () => {
@@ -26,7 +27,7 @@ const App = () => {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:4000/api/v1/user/admin/me",
+          `${API_BASE_URL}/api/v1/user/admin/me`,
           {
             withCredentials: true,
           }
@@ -39,7 +40,7 @@ const App = () => {
       }
     };
     fetchUser();
-  }, [isAuthenticated]);
+  }, [setIsAuthenticated, setAdmin]);
 
   return (
     <Router>

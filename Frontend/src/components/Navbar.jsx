@@ -4,6 +4,7 @@ import { Context } from '../main'
 import { useSnackbar } from 'notistack'
 import axios from 'axios'
 import {GiHamburgerMenu} from "react-icons/gi"
+import API_BASE_URL from '../config/api'
 
 const Navbar = () => {
     const [show, setShow] = useState(false);
@@ -13,7 +14,7 @@ const Navbar = () => {
     
     const handleLogout = async () => {
         try {
-            const res = await axios.get("http://localhost:4000/api/v1/user/patient/logout", { withCredentials: true });
+            const res = await axios.get(`${API_BASE_URL}/api/v1/user/patient/logout`, { withCredentials: true });
             setIsAuthenticated(false);
             enqueueSnackbar(res.data.message, { variant: 'success' });
         } catch (err) {

@@ -11,6 +11,7 @@ import { useContext, useEffect } from 'react';
 import { Context } from './main';
 import axios from 'axios';
 import Footer from './components/Footer';
+import API_BASE_URL from './config/api';
 
 function App() {
  const { isAuthenticated, setIsAuthenticated, user, setUser } = useContext(Context);
@@ -18,7 +19,7 @@ function App() {
  useEffect(() => {
   const fetchUser = async () => {
     try {
-      const response= await axios.get("http://localhost:4000/api/v1/user/patient/me", { withCredentials: true });
+      const response= await axios.get(`${API_BASE_URL}/api/v1/user/patient/me`, { withCredentials: true });
       setIsAuthenticated(true);
       setUser(response.data.user);
     } catch (error) {

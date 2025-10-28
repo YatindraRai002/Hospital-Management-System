@@ -15,9 +15,11 @@ const startServer = async () => {
     await dbConnection();
     console.log('✅ Database connected successfully');
     
-    app.listen(process.env.PORT, () => {
-      console.log(`✅ Server is running on port ${process.env.PORT}`);
-      console.log(`✅ Frontend can connect to: http://localhost:${process.env.PORT}`);
+    const PORT = process.env.PORT || 4000;
+    app.listen(PORT, () => {
+      console.log(`✅ Server is running on port ${PORT}`);
+      console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`✅ Frontend URLs allowed: ${process.env.FRONTEND_URL}, ${process.env.DASHBOARD_URL}`);
     });
   } catch (err) {
     console.error('Failed to start server:', err.message);

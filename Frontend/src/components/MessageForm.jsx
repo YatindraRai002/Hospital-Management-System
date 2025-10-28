@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
+import API_BASE_URL from '../config/api';
 
 const MessageForm = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -29,7 +30,7 @@ const MessageForm = () => {
     }
 
     try{
-      await axios.post("http://localhost:4000/api/v1/message/send",
+      await axios.post(`${API_BASE_URL}/api/v1/message/send`,
         {firstName,lastName,email,phone,message},
          {withCredentials:true, headers:{"Content-Type":"application/json"}
         }

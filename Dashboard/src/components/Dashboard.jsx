@@ -7,6 +7,7 @@ import { GoCheckCircleFill } from "react-icons/go";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { FaUsers, FaUserMd, FaCalendarAlt, FaChartLine } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
+import API_BASE_URL from "../config/api";
 
 const Dashboard = () => {
   const [appointments, setAppointments] = useState([]);
@@ -15,7 +16,7 @@ const Dashboard = () => {
     const fetchAppointments = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:4000/api/v1/appointment/getall",
+          `${API_BASE_URL}/api/v1/appointment/getall`,
           { withCredentials: true }
         );
         setAppointments(data.appointments);
@@ -28,11 +29,13 @@ const Dashboard = () => {
 
   const handleUpdateStatus = async (appointmentId, status) => {
     try {
+      console.log('Updating appointment:', appointmentId, 'to status:', status);
       const { data } = await axios.put(
-        `http://localhost:4000/api/v1/appointment/update/${appointmentId}`,
+        `${API_BASE_URL}/api/v1/appointment/update/${appointmentId}`,
         { status },
         { withCredentials: true }
       );
+      console.log('Update response:', data);
       setAppointments((prevAppointments) =>
         prevAppointments.map((appointment) =>
           appointment._id === appointmentId
@@ -42,7 +45,8 @@ const Dashboard = () => {
       );
       enqueueSnackbar(data.message, { variant: "success" });
     } catch (error) {
-      enqueueSnackbar(error.response.data.message, { variant: "error" });
+      console.error('Update error:', error.response?.data || error.message);
+      enqueueSnackbar(error.response?.data?.message || "Failed to update status", { variant: "error" });
     }
   };
 
@@ -109,8 +113,9 @@ const Dashboard = () => {
                             }
                           >
                             <option value="Pending">Pending</option>
-                            <option value="Accepted">Accepted</option>
-                            <option value="Rejected">Rejected</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Completed">Completed</option>
                           </select>
                         </div>
                       </td>
